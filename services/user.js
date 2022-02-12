@@ -38,7 +38,7 @@ async function login(username, password) {
 
 // TODO identify user by given identifier
 async function getUserByUsername(username) {
-    const user = User.find({ username });
+    const user = User.findOne({ username });
     return user;
 }
 

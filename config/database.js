@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('../models/User');
 
 // TODO change database name
 const dbName = 'wildlife';
