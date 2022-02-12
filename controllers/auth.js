@@ -1,4 +1,4 @@
-const { register } = require('../services/user');
+const { register, login } = require('../services/user');
 
 const router = require('express').Router();
 
@@ -16,6 +16,8 @@ router.post('/register', async (req, res) => {
         req.session.user = user;
         res.redirect('/'); // TODO check redirect requirements
     } catch (err) {
+        console.error(err);
+        // TODO send error messages
         res.render('register', { layout: false, data: { username: req.body.username } });
     }
 });
@@ -23,5 +25,18 @@ router.post('/register', async (req, res) => {
 router.get('/login', (req, res) => {
     res.render('login', { layout: false });
 });
+
+// TODO check form action, method, field names!!!
+router.post('/login', async(req, res) => {
+    try {
+        const user = await login(req.body.username, req.body.password);
+        req.session.user = user;
+        res.redirect('/'); // TODO check redirect requirements
+    } catch (err) {
+        console.error(err);
+        // TODO send error messages
+        res.render('login', { layout: false, data: { username: req.body.username } });
+    }
+})
 
 module.exports = router;

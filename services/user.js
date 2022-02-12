@@ -38,7 +38,7 @@ async function login(username, password) {
 
 // TODO identify user by given identifier
 async function getUserByUsername(username) {
-    const user = User.findOne({ username });
+    const user = User.findOne({ username: new RegExp(`^${username}$`, 'i') });
     return user;
 }
 
