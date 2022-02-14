@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
         console.error(err);
         // TODO send error messages
         const errors = mapErrors(err);
-        res.render('register', {  data: { username: req.body.username }, errors });
+        res.render('register', { data: { username: req.body.username }, errors });
     }
 });
 
@@ -29,7 +29,7 @@ router.get('/login', (req, res) => {
 });
 
 // TODO check form action, method, field names!!!
-router.post('/login', async(req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const user = await login(req.body.username, req.body.password);
         req.session.user = user;
@@ -38,8 +38,13 @@ router.post('/login', async(req, res) => {
         console.error(err);
         // TODO send error messages
         const errors = mapErrors(err);
-        res.render('login', {  data: { username: req.body.username }, errors  });
+        res.render('login', { data: { username: req.body.username }, errors });
     }
-})
+});
+
+router.get('/logout', (req, res) => {
+    delete req.session.user;
+    res.redirect('/');
+});
 
 module.exports = router;
