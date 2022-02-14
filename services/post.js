@@ -8,6 +8,7 @@ async function createPost(post) {
 }
 
 async function getPosts() {
+    // or .lean();
     return Post.find({});
 }
 

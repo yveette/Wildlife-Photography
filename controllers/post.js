@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { isUser } = require('../middleware/guards');
 const { createPost } = require('../services/post');
-const mapErrors = require('../util/mappers');
+const { mapErrors } = require('../util/mappers');
 
 router.get('/create', isUser(), (req, res) => {
     res.render('create', { title: 'Create Post' });
@@ -18,7 +18,6 @@ router.post('/create', isUser(), async (req, res) => {
         description: req.body.description,
         author: userId
     };
-    console.log(post);
 
     try {
         await createPost(post);
