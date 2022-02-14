@@ -1,9 +1,10 @@
 const { register, login } = require('../services/user');
+const mapErrors = require('../util/mappers');
 
 const router = require('express').Router();
 
 router.get('/register', (req, res) => {
-    res.render('register', { layout: false });
+    res.render('register');
 });
 
 // TODO check form action, method, field names!!!
@@ -18,12 +19,13 @@ router.post('/register', async (req, res) => {
     } catch (err) {
         console.error(err);
         // TODO send error messages
-        res.render('register', { layout: false, data: { username: req.body.username } });
+        const errors = mapErrors(err);
+        res.render('register', {  data: { username: req.body.username }, errors });
     }
 });
 
 router.get('/login', (req, res) => {
-    res.render('login', { layout: false });
+    res.render('login');
 });
 
 // TODO check form action, method, field names!!!
@@ -35,7 +37,8 @@ router.post('/login', async(req, res) => {
     } catch (err) {
         console.error(err);
         // TODO send error messages
-        res.render('login', { layout: false, data: { username: req.body.username } });
+        const errors = mapErrors(err);
+        res.render('login', {  data: { username: req.body.username }, errors  });
     }
 })
 
