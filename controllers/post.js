@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { isUser } = require('../middleware/guards');
-const { createPost, getPostById, updatePost } = require('../services/post');
+const { createPost, getPostById, updatePost, deletePost } = require('../services/post');
 const { mapErrors, postViewModel } = require('../util/mappers');
 
 router.get('/create', isUser(), (req, res) => {
@@ -42,6 +42,12 @@ router.get('/edit/:id', isUser(), async (req, res) => {
 
 router.post('/edit/:id', isUser(), async (req, res) => {
     const id = req.params.id;
+    const existing = postViewModel(await getPostById(id));
+
+    if (req.session.user._id != existing.author._id) {
+        res.redirect('/login');
+    }
+
     const post = {
         title: req.body.title,
         keyword: req.body.keyword,
@@ -61,5 +67,23 @@ router.post('/edit/:id', isUser(), async (req, res) => {
         res.render('edit', { title: 'Edit Post', errors, post });
     }
 });
+
+router.get('/delete/:id', isUser(), async (req, res) => {
+    const id = req.params.id;
+    const existing = postViewModel(await getPostById(id));
+
+    if (req.session.user._id != existing.author._id) {
+        res.redirect('/login');
+    }
+
+    try {
+        await deletePost(id);
+        res.redirect('/catalog');
+    } catch (err) {
+        console.error(err);
+        const errors = mapErrors(err);
+        res.render('catalog', { title: existing.title, errors, post });
+    }
+})
 
 module.exports = router;
