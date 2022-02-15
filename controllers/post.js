@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { isUser } = require('../middleware/guards');
-const { createPost, getPostById, updatePost, deletePost } = require('../services/post');
+const { createPost, getPostById, updatePost, deletePost, vote } = require('../services/post');
 const { mapErrors, postViewModel } = require('../util/mappers');
 
 router.get('/create', isUser(), (req, res) => {
@@ -82,8 +82,23 @@ router.get('/delete/:id', isUser(), async (req, res) => {
     } catch (err) {
         console.error(err);
         const errors = mapErrors(err);
-        res.render('catalog', { title: existing.title, errors, post });
+        res.render('details', { title: existing.title, errors, post });
     }
+});
+
+router.get('/vote/:id/:type', isUser(), async (req, res) => {
+    const id = req.params.id;
+    const value = req.params.type == 'upvote' ? 1 : -1;
+
+    try {
+        await vote(id, req.session.user._id, value);
+        res.redirect('/catalog/' + id)
+    } catch (err) {
+        console.error(err);
+        const errors = mapErrors(err);
+        res.render('details', { title: 'Post Details', errors });
+    }
+
 })
 
 module.exports = router;

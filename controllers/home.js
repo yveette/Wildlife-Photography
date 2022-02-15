@@ -21,6 +21,8 @@ router.get('/catalog/:id', async (req, res) => {
         post.hasUser = true;
         if (req.session.user._id == post.author._id) {
             post.isAuthor = true;
+        } else {
+            post.hasVoted = post.votes.includes(req.session._id);
         }
     }
     // TODO check votes
